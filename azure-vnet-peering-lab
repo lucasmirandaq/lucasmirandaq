@@ -1,0 +1,89 @@
+# 🌐 Azure VNet Peering Lab — Simulação Matriz-Filial
+
+Laboratório de redes em nuvem no Microsoft Azure simulando a conectividade entre Matriz e Filial usando VNet Peering e regras de segurança com NSG.
+
+---
+
+## 🎯 Objetivo
+
+Demonstrar na prática conceitos de segmentação de redes corporativas em nuvem, incluindo:
+- Criação de redes virtuais isoladas
+- Conexão entre redes via VNet Peering
+- Controle de tráfego simulando firewall com NSG
+
+---
+
+## 🏗️ Arquitetura
++-------------------------+             +-------------------------+
+       |       VNet-Matriz       |             |       VNet-Filial       |
+       |      10.1.0.0/16        |             |      10.2.0.0/16        |
+       +------------+------------+             +------------+------------+
+                    |                                       |
+                    |            VNet Peering               |
+                    +=======================================+
+                    |                                       |
+       +------------+------------+             +------------+------------+
+       |      Subnet-Matriz      |             |      Subnet-Filial      |
+       |      10.1.1.0/24        |             |      10.2.1.0/24        |
+       +------------+------------+             +------------+------------+
+                    |                                       |
+            NSG-Matriz (Firewall)                   NSG-Filial (Firewall)
+
+|
+
+NSG-Matriz / NSG-Filial
+
+(Regras de Firewall)
+---
+
+## ⚙️ Recursos Criados
+
+| Recurso | Nome | Configuração |
+|---|---|---|
+| Resource Group | RG-NetDevOps-Lab | Brazil South |
+| Rede Virtual | VNet-Matriz | 10.1.0.0/16 |
+| Sub-rede | Subnet-Matriz | 10.1.1.0/24 |
+| Rede Virtual | VNet-Filial | 10.2.0.0/16 |
+| Sub-rede | Subnet-Filial | 10.2.1.0/24 |
+| Peering | Matriz-para-Filial | Bidirecional |
+| NSG | NSG-Matriz | Associado à Subnet-Matriz |
+| NSG | NSG-Filial | Associado à Subnet-Filial |
+
+---
+
+## 🔒 Regras de Segurança (NSG)
+
+### NSG-Matriz — Entrada
+| Prioridade | Nome | Protocolo | Origem | Ação |
+|---|---|---|---|---|
+| 100 | Allow-ICMP-from-Filial | ICMP | 10.2.0.0/16 | ✅ Allow |
+| 200 | Deny-RDP-from-Filial | TCP 3389 | 10.2.0.0/16 | ❌ Deny |
+
+### NSG-Filial — Entrada
+| Prioridade | Nome | Protocolo | Origem | Ação |
+|---|---|---|---|---|
+| 100 | Allow-ICMP-from-Matriz | ICMP | 10.1.0.0/16 | ✅ Allow |
+| 200 | Deny-RDP-from-Matriz | TCP 3389 | 10.1.0.0/16 | ❌ Deny |
+
+---
+
+## 📚 Conceitos Aplicados
+
+- **CIDR /16 e /24** — Segmentação de redes com máscaras de sub-rede
+- **VNet Peering** — Conexão privada entre redes virtuais sem passar pela internet
+- **NSG** — Firewall nativo do Azure com modelo deny-by-default
+- **ICMP** — Protocolo de ping usado para validar conectividade
+- **RDP (porta 3389)** — Bloqueio de acesso remoto direto entre redes
+
+---
+
+## 🛠️ Tecnologias
+
+![Azure](https://img.shields.io/badge/Azure-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
+
+---
+
+## 👨‍💻 Autor
+
+**Lucas Miranda**  
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/lucas-mirandaq/)
